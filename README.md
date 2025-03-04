@@ -1,4 +1,4 @@
-# WearWise ![Logo](images/logo.png)
+# WearWise
 <p align="center">
   <img src="images/logo.png" alt="WW Logo" width="200">
 </p>
