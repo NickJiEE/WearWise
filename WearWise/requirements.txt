@@ -1,0 +1,15 @@
+fastapi
+pydantic
+uvicorn
+mysql-connector-python
+mysql.connector
+pandas
+python-dotenv
+python-multipart
+bcrypt
+requests
+pyotp
+qrcode[pil]
+numpy
+matplotlib
+paho-mqtt
