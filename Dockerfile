@@ -11,4 +11,5 @@ COPY ./wardrobe/sample /code/wardrobe/sample
 
 ENV PYTHONPATH=/code/wardrobe
 
-CMD ["uvicorn", "wardrobe.main:app", "--host", "0.0.0.0", "--port", "6543", "--reload"]
+EXPOSE 80
+CMD ["uvicorn", "wardrobe.main:app", "--host", "0.0.0.0", "--port", "80", "--reload"]
