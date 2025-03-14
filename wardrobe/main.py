@@ -837,5 +837,4 @@ async def get_user_location(request: Request, current_session: dict = Depends(ge
     return {"location": result["location"]}
 
 if __name__ == "__main__":
-    mqtt_conn()
     uvicorn.run("main:app", host="0.0.0.0", port=6543, reload=True)
