@@ -191,7 +191,7 @@ def create_devices_table():
         name VARCHAR(255),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-        UNIQUE KEY user_device_unique (user_id, device_id),
+        UNIQUE KEY user_device_unique (user_id, device_id)
     )
     """
     conn = None
