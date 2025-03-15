@@ -1,5 +1,5 @@
 .env
 *.venv*
+ca.pem
 /data/*
 !/data/.gitkeep
-ca.pem
