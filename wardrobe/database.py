@@ -18,6 +18,7 @@ MYSQL_USER = os.getenv("MYSQL_USER")
 MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD")
 MYSQL_DATABASE = os.getenv("MYSQL_DATABASE")
 MYSQL_HOST = os.getenv("MYSQL_HOST")
+MYSQL_PORT = os.getenv("MYSQL_PORT")
 
 GEMINI_API_KEY = "AIzaSyBrzgEDhS0AR5ZYi2oAzaTuloo-7PPhwuE"
 
@@ -25,7 +26,7 @@ def get_db_connection():
     """
     Returns a MySQL connection using the environment variables provided.
     """
-    conn = mysql.connect(user=MYSQL_USER, password=MYSQL_PASSWORD, host=MYSQL_HOST, database=MYSQL_DATABASE)
+    conn = mysql.connect(user=MYSQL_USER, password=MYSQL_PASSWORD, host=MYSQL_HOST, database=MYSQL_DATABASE, port=MYSQL_PORT)
     return conn
 
 def hash_password(plain_password: str) -> str:
