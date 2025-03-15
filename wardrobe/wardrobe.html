@@ -160,6 +160,46 @@
       .buttons button:hover {
         background-color: #0056b3;
       }
+
+      /* Footer Styles */
+      .site-footer {
+          background-color: #ffffff;
+          padding: 20px 5%;
+          text-align: center;
+          box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+          margin-top: 50px;
+      }
+
+      .site-footer .footer-content {
+          max-width: 1200px;
+          margin: 0 auto;
+          margin-top: auto;
+      }
+
+      .footer-nav {
+          display: flex;
+          justify-content: center;
+          gap: 20px;
+          margin-bottom: 10px;
+      }
+
+      .footer-nav a {
+          text-decoration: none;
+          color: #0056b3;
+          font-weight: bold;
+          transition: 0.3s;
+          padding: 8px 15px;
+          border-radius: 5px;
+      }
+
+      .footer-nav a:hover {
+          background-color: #e1ebfd;
+      }
+
+      .footer-copy {
+          font-size: 14px;
+          color: #666;
+      }
     </style>
   </head>
   <body>
@@ -207,5 +247,18 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
     <script src="/static/js/weather.js" defer></script>
     <script src="/static/js/wardrobe.js" defer></script>
+    
+    <footer class="site-footer">
+        <div class="footer-content">
+            <nav class="footer-nav">
+                <a href="/contact-us">Contact Us</a>
+                <a href="/privacy-policy">Privacy Policy</a>
+                <a href="/terms-and-conditions">Terms & Conditions</a>
+            </nav>
+            <div class="footer-copy">
+                &copy; 2025 WearWise. All rights reserved.
+            </div>
+        </div>
+    </footer>
   </body>
 </html>

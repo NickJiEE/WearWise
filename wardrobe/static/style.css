@@ -102,6 +102,16 @@ body {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
+.container p {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.container h2 {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
 .text-content {
     flex: 1;
     padding: 20px;
@@ -135,40 +145,40 @@ body {
     text-align: center;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
     margin-top: 50px;
-  }
-  
-  .site-footer .footer-content {
+}
+
+.site-footer .footer-content {
     max-width: 1200px;
     margin: 0 auto;
     margin-top: auto;
-  }
-  
-  .footer-nav {
+}
+
+.footer-nav {
     display: flex;
     justify-content: center;
     gap: 20px;
     margin-bottom: 10px;
-  }
-  
-  .footer-nav a {
+}
+
+.footer-nav a {
     text-decoration: none;
     color: #0056b3;
     font-weight: bold;
     transition: 0.3s;
     padding: 8px 15px;
     border-radius: 5px;
-  }
-  
-  .footer-nav a:hover {
+}
+
+.footer-nav a:hover {
     background-color: #e1ebfd;
-  }
-  
-  .footer-copy {
+}
+
+.footer-copy {
     font-size: 14px;
     color: #666;
-  }
+}
 
-  .container.privacy-container {
+.container.privacy-container {
     flex: 1;
     padding-bottom: 40px;
 }
