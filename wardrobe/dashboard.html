@@ -120,6 +120,19 @@
         font-family: 'Poppins', sans-serif;
       }
 
+      .info {
+        display: flex;
+        justify-content: center; /* Horizontally center the images */
+        align-items: center; /* Vertically center the images */
+        flex-wrap: wrap; /* Allow wrapping if there are multiple images */
+        gap: 10px; /* Add some space between images */
+      }
+
+      .info img {
+        max-width: 100%; /* Ensure images scale appropriately */
+        height: auto; /* Maintain aspect ratio */
+      }
+
       button, input[type="submit"] {
         background-color: #007bff;
         color: white;
