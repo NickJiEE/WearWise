@@ -5,7 +5,7 @@ import bcrypt
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 from fastapi import FastAPI, HTTPException, Request, status, Query, Form, Body, Depends
-from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from database import (get_db_connection, create_and_seed_tables, 
                       hash_password, create_session, get_session, 
@@ -839,6 +839,18 @@ async def get_user_location(request: Request, current_session: dict = Depends(ge
         raise HTTPException(status_code=404, detail="User location not found")
 
     return {"location": result["location"]}
+
+@app.get("/contact-us")
+def get_contact():
+    return FileResponse("wardrobe/contact-us.html")
+
+@app.get("/privacy-policy")
+def get_privacy_policy():
+    return FileResponse("wardrobe/privacy-policy.html")
+
+@app.get("/terms-and-conditions")
+def get_terms():
+    return FileResponse("wardrobe/terms-and-conditions.html")
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=6543, reload=True)

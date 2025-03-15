@@ -7,6 +7,12 @@ html, body {
     padding: 0;
     background-color: #f4f7fc;
     color: #333;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
 }
 
 .navbar {
@@ -86,6 +92,7 @@ html, body {
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
+    flex: 1;
     width: 90%;
     max-width: 1200px;
     margin: 50px auto;
@@ -133,6 +140,7 @@ html, body {
   .site-footer .footer-content {
     max-width: 1200px;
     margin: 0 auto;
+    margin-top: auto;
   }
   
   .footer-nav {
@@ -159,4 +167,8 @@ html, body {
     font-size: 14px;
     color: #666;
   }
-  
+
+  .container.privacy-container {
+    flex: 1;
+    padding-bottom: 40px;
+}
