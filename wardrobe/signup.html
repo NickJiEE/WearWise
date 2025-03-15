@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WearWise - Register</title>
+        <link rel="icon" type="image/x-icon" href="/static/wearwise.ico">
+        <link rel="stylesheet" href="/static/style.css">
+        <style>
+            html, body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f7fc;
+                height: 100%;
+                overflow: hidden;
+            }
+            .register-wrapper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: calc(100vh - 80px);
+            }
+            .register-container {
+                background-color: #fff;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                width: 300px;
+            }
+            .register-container h1 {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .register-container form {
+                display: flex;
+                flex-direction: column;
+            }
+            .register-container input {
+                padding: 10px;
+                margin-bottom: 15px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+            .register-container button {
+                padding: 10px;
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+            .register-container button:hover {
+                background-color: #0056b3;
+            }
+            .register-container .login-link {
+                text-align: center;
+            }
+            .register-container .login-link a {
+                text-decoration: none;
+                color: #007bff;
+                font-weight: bold;
+            }
+            .register-container .login-link a:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Navigation Bar -->
+        <header>
+            <div class="navbar">
+                <a href="/" class="brand">
+                    <img src="/static/logo.png" alt="WearWise Logo">
+                    WearWise
+                </a>
+            </div>
+        </header>
+        
+        <!-- Centered Register Form Wrapper -->
+        <div class="register-wrapper">
+            <div class="register-container">
+                <h1>Create New Account</h1>
+                <form action="/signup" method="post">
+                    <input type="text" name="name" placeholder="Full Name" required>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                    <input type="text" name="location" placeholder="City, State" required>
+                    <button type="submit">Register</button>
+                </form>
+                <div class="login-link">
+                    <p>Already have an account? <a href="/login">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
