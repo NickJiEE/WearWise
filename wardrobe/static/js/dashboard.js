@@ -1,6 +1,4 @@
 let temperatureChart;
-// let humidityChart;
-// let lightChart;
 
 window.addEventListener("DOMContentLoaded", () => {
   window.PAGE_LOAD_TIME = new Date().toISOString();
@@ -9,7 +7,7 @@ window.addEventListener("DOMContentLoaded", () => {
     .then(response => response.json())
     .then(data => {
       if (data.location) {
-        // Set global variable if needed
+        // Set global variable for location
         window.USER_LOCATION = data.location;
         // Set the default value of the city input in the weather form
         const cityInput = document.getElementById("city");
@@ -17,7 +15,6 @@ window.addEventListener("DOMContentLoaded", () => {
           cityInput.value = data.location;
         }
       }
-      // Optionally, you can also store the user ID if needed:
       if (data.user_id) {
         window.USER_ID = data.user_id;
       }
@@ -69,15 +66,6 @@ function loadAllCharts() {
   .then((tempData) => {
     renderChart("temperatureChart", tempData, "Temperature (°F)");
   });
-
-  // Comment out humidity and light charts for now
-  // fetchSensorData("humidity", startDateTime, endDateTime).then((humidityData) => {
-  //   renderChart("humidityChart", humidityData, "Humidity");
-  // });
-
-  // fetchSensorData("light", startDateTime, endDateTime).then((lightData) => {
-  //   renderChart("lightChart", lightData, "Light");
-  // });
 }
 
 function getDateRange() {
@@ -181,9 +169,7 @@ function renderChart(canvasId, dataArr, labelName) {
     });
     colorIndex++;
   }
-
-  // For labels, we'll use the timestamps from the first dataset.
-  // If devices have different timestamps, you might want to merge them.
+  
   let labels = [];
   const firstKey = Object.keys(groupedData)[0];
   if (firstKey) {
@@ -207,7 +193,6 @@ function renderChart(canvasId, dataArr, labelName) {
       plugins: {
         tooltip: {
           callbacks: {
-            // Optionally, include device id in the tooltip
             label: function(context) {
               const deviceId = context.dataset.label;
               const value = context.parsed.y;
@@ -235,13 +220,11 @@ function renderChart(canvasId, dataArr, labelName) {
 }
 
 function startRealTimeUpdates() {
-  // Update every 5 seconds (adjust as needed)
+  // Update every 5 seconds
   setInterval(async () => {
-    // Optionally, get the current date range. For real time, you might pass null.
+
     const { startDateTime, endDateTime } = getDateRange(); 
-    // If you want real-time data (from "now"), you could simply call:
-    // const tempData = await fetchSensorData("temperature", null, null, window.SELECTED_DEVICE_ID);
-    // Otherwise, use the date range:
+
     const tempData = await fetchSensorData("temperature", startDateTime, endDateTime, window.SELECTED_DEVICE_ID);
     
     // If a chart instance already exists, update it; otherwise, create a new one.
@@ -259,5 +242,5 @@ function startRealTimeUpdates() {
 
 document.getElementById("deviceSelector").addEventListener("change", function() {
   window.SELECTED_DEVICE_ID = this.value || null;
-  loadAllCharts(); // Reload charts based on selected device
+  loadAllCharts();
 });

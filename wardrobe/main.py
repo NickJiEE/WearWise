@@ -21,8 +21,6 @@ app = FastAPI()
 
 devices: List[str] = []
 
-VALID_SENSORS = ["temperature"]
-
 static_dir = os.path.join(os.path.dirname(__file__), "static")
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
@@ -36,15 +34,6 @@ async def get_current_session(request: Request):
     if not session:
         raise HTTPException(status_code=401, detail="Not authenticated")
     return session
-
-def validate_sensor_type(sensor_type: str):
-    """
-    Helper function to ensure the sensor_type is valid.
-    Raises an HTTPException(404) if invalid.
-    """
-    if sensor_type not in VALID_SENSORS:
-        raise HTTPException(status_code=404, detail="Invalid sensor type.")
-    return sensor_type
 
 def parse_datetime_to_mysql(dt_string: str) -> str:
     """
@@ -60,14 +49,6 @@ def parse_datetime_to_mysql(dt_string: str) -> str:
             raise ValueError(f"Invalid datetime format: {dt_string}")
     return dt.strftime("%Y-%m-%d %H:%M:%S")
 
-@app.on_event("startup")
-def on_startup():
-    """
-    This function is called when the application starts.
-    It will create and seed the tables in MySQL.
-    """
-    create_and_seed_tables()
-    
 # Index page
 @app.get("/", response_class=HTMLResponse)
 def get_html() -> HTMLResponse:
@@ -339,6 +320,14 @@ async def logout(request: Request):
     
     return response
 
+@app.on_event("startup")
+def on_startup():
+    """
+    This function is called when the application starts.
+    It will create and seed the tables in MySQL.
+    """
+    create_and_seed_tables()
+
 # Fetch the dashboard
 @app.get("/dashboard", response_class=HTMLResponse)
 async def read_dashboard(current_session: dict = Depends(get_current_session)):
@@ -384,20 +373,20 @@ async def add_user_device(
     """
     if not device_id:
         raise HTTPException(status_code=400, detail="Device ID is required")
+        
     
     # Get user ID from the session
     user_id = current_session["user_id"]
     
     conn = get_db_connection()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
     
     # Check if the device already exists for this user
-    check_query = "SELECT * FROM devices WHERE user_id = %s AND device_id = %s"
-    cursor.execute(check_query, (user_id, device_id))
-    if cursor.fetchone():
-        cursor.close()
-        conn.close()
-        raise HTTPException(status_code=400, detail="Device already exists for this user")
+    check_query = "SELECT user_id FROM devices WHERE device_id = %s"
+    cursor.execute(check_query, (device_id,))
+    row = cursor.fetchone()
+    if row and row["user_id"] != user_id:
+        raise HTTPException(status_code=400, detail="Device already registered to another user")
     
     # Insert the new device
     device_name = name if name else device_id
@@ -599,43 +588,51 @@ def update_cloth(
     return {"message": "Cloth updated successfully", "id": cloth_id}
 
 # Fetch all records for a sensor type
-@app.get("/api/{sensor_type}")
+@app.get("/api/temperature")
 def get_all_data(
-    sensor_type: str,
     order_by: Optional[str] = Query(None, alias="order-by"),
     start_date: Optional[str] = Query(None, alias="start-date"),
     end_date: Optional[str] = Query(None, alias="end-date"),
-    device_id: Optional[str] = Query(None, description="Device ID to filter by")
+    current_session: dict = Depends(get_current_session),
+    request: Request = None
 ):
-    validate_sensor_type(sensor_type)
-
+    # Retrieve user_id from cookies or session (modify according to your auth system)
+    user_id = current_session.get("user_id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="User not logged in")
+    
+    # Get the device IDs for this user from the devices table
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-
-    base_query = f"SELECT * FROM {sensor_type}"
-    where_clauses = []
-    params = []
-
+    cursor.execute("SELECT device_id FROM devices WHERE user_id = %s", (user_id,))
+    device_rows = cursor.fetchall()
+    cursor.close()
+    
+    device_ids = [row["device_id"] for row in device_rows]
+    if not device_ids:
+        conn.close()
+        return []  # No devices registered, so no data to display
+    
+    # Build query to filter temperature data by these device IDs
+    base_query = "SELECT * FROM temperature WHERE device_id IN ({})".format(
+        ", ".join(["%s"] * len(device_ids))
+    )
+    params = device_ids
+    
     if start_date:
         start_date = start_date.replace("T", " ")
-        where_clauses.append("timestamp >= %s")
+        base_query += " AND timestamp >= %s"
         params.append(start_date)
-
+    
     if end_date:
         end_date = end_date.replace("T", " ")
-        where_clauses.append("timestamp <= %s")
+        base_query += " AND timestamp <= %s"
         params.append(end_date)
-
-    if device_id:
-        where_clauses.append("device_id = %s")
-        params.append(device_id)
-
-    if where_clauses:
-        base_query += " WHERE " + " AND ".join(where_clauses)
-
+    
     if order_by in ["temp", "timestamp"]:
         base_query += f" ORDER BY {order_by}"
-
+    
+    cursor = conn.cursor(dictionary=True)
     cursor.execute(base_query, params)
     rows = cursor.fetchall()
     
@@ -643,31 +640,44 @@ def get_all_data(
         ts = row["timestamp"]
         if isinstance(ts, datetime):
             row["timestamp"] = ts.strftime("%Y-%m-%d %H:%M:%S")
-
+    
     cursor.close()
     conn.close()
     return rows
 
 # Create a new record
-@app.post("/api/{sensor_type}")
-def create_data(sensor_type: str, data: dict):
+@app.post("/api/temperature")
+def create_data(data: dict):
     """
-    POST: /api/{sensor_type}
-    Body: {
+    Inserts a new temperature record.
+    Expected JSON body:
+    {
       "temp": float,
       "unit": string,
       "timestamp": optional, "YYYY-MM-DD HH:MM:SS" or ISO8601 format,
-      "device_id" = optional, string
+      "device_id": string  -- must be registered via /api/devices/add
     }
-    Inserts a new record and returns {"id": new_id}.
     """
-    validate_sensor_type(sensor_type)
-
     temp = data.get("temp")
     unit = data.get("unit")
     timestamp = data.get("timestamp")
-    device_id = data.get("device_id", "unknown")
-
+    device_id = data.get("device_id")
+    
+    if not device_id:
+        raise HTTPException(status_code=400, detail="device_id is required")
+    
+    # Check if the device_id is registered for any user
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT user_id FROM devices WHERE device_id = %s", (device_id,))
+    device_info = cursor.fetchone()
+    cursor.close()
+    
+    if not device_info:
+        conn.close()
+        raise HTTPException(status_code=400, detail="Device not registered")
+    
+    # Optionally, you can also use the returned user_id from device_info to associate the sensor reading with that user.
     if timestamp:
         try:
             timestamp = parse_datetime_to_mysql(timestamp)
@@ -675,12 +685,10 @@ def create_data(sensor_type: str, data: dict):
             raise HTTPException(status_code=400, detail=str(e))
     else:
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    conn = get_db_connection()
+    
     cursor = conn.cursor()
-
-    insert_query = f"""
-        INSERT INTO {sensor_type} (temp, unit, timestamp, device_id)
+    insert_query = """
+        INSERT INTO temperature (temp, unit, timestamp, device_id)
         VALUES (%s, %s, %s, %s)
     """
     cursor.execute(insert_query, (temp, unit, timestamp, device_id))
@@ -693,17 +701,16 @@ def create_data(sensor_type: str, data: dict):
     return {"id": new_id}
 
 # Fetch the count of records for a sensor type
-@app.get("/api/{sensor_type}/count")
-def get_count(sensor_type: str):
+@app.get("/api/temperature/count")
+def get_count():
     """
     GET: /api/{sensor_type}/count
     Returns the number of rows for that sensor_type.
     """
-    validate_sensor_type(sensor_type)
 
     conn = get_db_connection()
     cursor = conn.cursor()
-    count_query = f"SELECT COUNT(*) FROM {sensor_type}"
+    count_query = f"SELECT COUNT(*) FROM temperature"
     cursor.execute(count_query)
     (count,) = cursor.fetchone()
 
@@ -713,18 +720,17 @@ def get_count(sensor_type: str):
     return count
 
 # Fetch a record by ID
-@app.get("/api/{sensor_type}/{record_id}")
-def get_record(sensor_type: str, record_id: int):
+@app.get("/api/temperature/{record_id}")
+def get_record(record_id: int):
     """
     GET: /api/{sensor_type}/{id}
     Returns a single record by ID, or 404 if not found.
     """
-    validate_sensor_type(sensor_type)
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
-    query = f"SELECT * FROM {sensor_type} WHERE id=%s"
+    query = f"SELECT * FROM temperature WHERE id=%s"
     cursor.execute(query, (record_id,))
     row = cursor.fetchone()
 
@@ -737,8 +743,8 @@ def get_record(sensor_type: str, record_id: int):
     return row
 
 # Update a record by ID
-@app.put("/api/{sensor_type}/{record_id}")
-def update_record(sensor_type: str, record_id: int, data: dict):
+@app.put("/api/temperature/{record_id}")
+def update_record(record_id: int, data: dict):
     """
     PUT: /api/{sensor_type}/{id}
     Body (any of these optional):
@@ -748,7 +754,6 @@ def update_record(sensor_type: str, record_id: int, data: dict):
       "timestamp": "YYYY-MM-DD HH:MM:SS" or ISO8601
     }
     """
-    validate_sensor_type(sensor_type)
 
     fields_to_update = []
     params = []
@@ -770,7 +775,7 @@ def update_record(sensor_type: str, record_id: int, data: dict):
     if not fields_to_update:
         raise HTTPException(status_code=400, detail="No valid fields to update.")
 
-    update_query = f"UPDATE {sensor_type} SET {', '.join(fields_to_update)} WHERE id=%s"
+    update_query = f"UPDATE temperature SET {', '.join(fields_to_update)} WHERE id=%s"
     params.append(record_id)
 
     conn = get_db_connection()
@@ -789,17 +794,16 @@ def update_record(sensor_type: str, record_id: int, data: dict):
     return {"status": "success"}
 
 # Delete a record by ID
-@app.delete("/api/{sensor_type}/{record_id}")
-def delete_record(sensor_type: str, record_id: int):
+@app.delete("/api/temperature/{record_id}")
+def delete_record(record_id: int):
     """
     DELETE: /api/{sensor_type}/{id}
     Deletes a single record by ID, or returns 404 if not found.
     """
-    validate_sensor_type(sensor_type)
 
     conn = get_db_connection()
     cursor = conn.cursor()
-    delete_query = f"DELETE FROM {sensor_type} WHERE id=%s"
+    delete_query = f"DELETE FROM temperature WHERE id=%s"
     cursor.execute(delete_query, (record_id,))
     conn.commit()
 
@@ -837,5 +841,4 @@ async def get_user_location(request: Request, current_session: dict = Depends(ge
     return {"location": result["location"]}
 
 if __name__ == "__main__":
-    mqtt_conn()
     uvicorn.run("main:app", host="0.0.0.0", port=6543, reload=True)
