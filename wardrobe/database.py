@@ -289,12 +289,12 @@ def create_and_seed_tables():
     create_devices_table() 
     create_closet_table()
 
-    sensor_csv_mapping = {
-        "temperature": "wardrobe/sample/temperature.csv"
-    }
+    # sensor_csv_mapping = {
+    #     "temperature": "wardrobe/sample/temperature.csv"
+    # }
 
-    for sensor, csv_file in sensor_csv_mapping.items():
-        seed_data_from_csv(sensor, csv_file)
+    # for sensor, csv_file in sensor_csv_mapping.items():
+    #     seed_data_from_csv(sensor, csv_file)
 
 # Get clothing recommendation from Gemini LLM API
 def get_clothing_recommendation(city: str, weather: str, temp: float) -> str:
