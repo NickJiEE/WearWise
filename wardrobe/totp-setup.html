@@ -6,6 +6,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
+      html, body {
+        overflow-x: hidden;
+        max-width: 100%;
+      }
       body {
         font-family: "Inter", sans-serif;
         background-color: #f4f7fc;
@@ -25,6 +29,7 @@
         background: #ffffff;
         padding: 15px 5%;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
         position: sticky;
         top: 0;
         z-index: 1000;
@@ -32,8 +37,9 @@
       }
       .navbar .container {
         width: 100%;
-        max-width: 1200px; /* Optional: This limits the width of content, you can adjust this */
-        padding: 0 20px;  /* Optional: You can control padding here if you want space around the content */
+        max-width: 1200px;
+        padding: 0 20px;
+        box-sizing: border-box;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -78,7 +84,7 @@
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0,0,0,0.1);
         text-align: left;
-        margin-top: 30px;
+        margin-top: 15px;
         margin-bottom: 30px;
       }
       h1, h2, h3 {
