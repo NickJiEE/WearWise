@@ -11,9 +11,6 @@
         background-color: #f4f7fc;
         margin: 0;
         padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
         min-height: 100vh;
         width: 100%;
       }
@@ -23,10 +20,10 @@
       }
       .navbar {
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
         background: #ffffff;
-        padding: 15px 0;
+        padding: 15px 5%;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         position: sticky;
         top: 0;
@@ -68,6 +65,11 @@
       }
       .navbar a:hover {
         background-color: #e1ebfd;
+      }
+      .main-content {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
       }
       .setup-container {
         background-color: #fff;
@@ -264,55 +266,56 @@
           </nav>
       </div>
     </header>
-
-    <div class="setup-container">
-      <a href="/profile" class="back-link">← Back to Profile</a>
-      
-      <h1>Two-Factor Authentication Setup</h1>
-      
-      <div id="setup-message" class="setup-message" style="display: none;"></div>
-      
-      <div id="setup-section">
-        <div class="setup-steps">
-          <p>Two-factor authentication adds an extra layer of security to your account by requiring a verification code from your mobile device when you log in.</p>
-          <ol>
-            <li>Install an authenticator app on your mobile device (such as Google Authenticator, Authy, or Microsoft Authenticator)</li>
-            <li>Scan the QR code below with your authenticator app</li>
-            <li>Enter the 6-digit verification code from your app to enable two-factor authentication</li>
-          </ol>
-        </div>
+    <div class="main-content">
+      <div class="setup-container">
+        <a href="/profile" class="back-link">← Back to Profile</a>
         
-        <div class="qr-section">
-          <img id="qr-code" class="qr-code-img" alt="QR Code for TOTP setup">
+        <h1>Two-Factor Authentication Setup</h1>
+        
+        <div id="setup-message" class="setup-message" style="display: none;"></div>
+        
+        <div id="setup-section">
+          <div class="setup-steps">
+            <p>Two-factor authentication adds an extra layer of security to your account by requiring a verification code from your mobile device when you log in.</p>
+            <ol>
+              <li>Install an authenticator app on your mobile device (such as Google Authenticator, Authy, or Microsoft Authenticator)</li>
+              <li>Scan the QR code below with your authenticator app</li>
+              <li>Enter the 6-digit verification code from your app to enable two-factor authentication</li>
+            </ol>
+          </div>
           
-          <div class="manual-entry">
-            <h3>Manual Entry</h3>
-            <p>If you can't scan the QR code, manually enter this key in your authenticator app:</p>
-            <div id="secret-key" class="secret-key"></div>
+          <div class="qr-section">
+            <img id="qr-code" class="qr-code-img" alt="QR Code for TOTP setup">
+            
+            <div class="manual-entry">
+              <h3>Manual Entry</h3>
+              <p>If you can't scan the QR code, manually enter this key in your authenticator app:</p>
+              <div id="secret-key" class="secret-key"></div>
+            </div>
+          </div>
+          
+          <div class="verification-section">
+            <h2>Verify Setup</h2>
+            <p>Enter the 6-digit verification code from your authenticator app to complete the setup:</p>
+            
+            <form id="enable-totp-form">
+              <input type="hidden" id="secret-input" name="secret">
+              <input type="text" name="verification_code" placeholder="Enter 6-digit code" required pattern="[0-9]{6}" maxlength="6">
+              <button type="submit">Enable Two-Factor Authentication</button>
+            </form>
           </div>
         </div>
         
-        <div class="verification-section">
-          <h2>Verify Setup</h2>
-          <p>Enter the 6-digit verification code from your authenticator app to complete the setup:</p>
+        <div id="disable-section">
+          <h2>Disable Two-Factor Authentication</h2>
+          <p>You currently have two-factor authentication enabled. To disable it, enter your current verification code from your authenticator app.</p>
+          <p><strong>Warning:</strong> Disabling two-factor authentication will make your account less secure.</p>
           
-          <form id="enable-totp-form">
-            <input type="hidden" id="secret-input" name="secret">
+          <form id="disable-totp-form">
             <input type="text" name="verification_code" placeholder="Enter 6-digit code" required pattern="[0-9]{6}" maxlength="6">
-            <button type="submit">Enable Two-Factor Authentication</button>
+            <button type="submit" class="button-danger">Disable Two-Factor Authentication</button>
           </form>
         </div>
-      </div>
-      
-      <div id="disable-section">
-        <h2>Disable Two-Factor Authentication</h2>
-        <p>You currently have two-factor authentication enabled. To disable it, enter your current verification code from your authenticator app.</p>
-        <p><strong>Warning:</strong> Disabling two-factor authentication will make your account less secure.</p>
-        
-        <form id="disable-totp-form">
-          <input type="text" name="verification_code" placeholder="Enter 6-digit code" required pattern="[0-9]{6}" maxlength="6">
-          <button type="submit" class="button-danger">Disable Two-Factor Authentication</button>
-        </form>
       </div>
     </div>
 
