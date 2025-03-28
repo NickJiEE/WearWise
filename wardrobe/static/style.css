@@ -14,7 +14,7 @@ body {
     display: flex;
     flex-direction: column;
 }
-
+/* Navbar styling */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -178,7 +178,201 @@ body {
     color: #666;
 }
 
+/* Login Wrapper */
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 80px);
+}
+
+/* Login Container */
+.login-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+/* Form Elements */
+.login-container h1 {
+    margin-bottom: 20px;
+}
+
+.login-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-container input {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Buttons */
+.login-container button {
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.login-container button:hover {
+    background-color: #0056b3;
+}
+
+/* Links */
+.login-container .register-link {
+    text-align: center;
+}
+
+.login-container .register-link a,
+.back-to-login a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.login-container .register-link a:hover,
+.back-to-login a:hover {
+    text-decoration: underline;
+}
+
+/* Error Messages */
+.error-message {
+    color: #dc3545;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Register Page Styling */
+.register-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 80px);
+}
+
+.register-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+/* Form Elements */
+.register-container h1 {
+    margin-bottom: 20px;
+}
+
+.register-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.register-container input {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Buttons */
+.register-container button {
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.register-container button:hover {
+    background-color: #0056b3;
+}
+
+/* Links */
+.register-container .login-link {
+    text-align: center;
+}
+
+.register-container .login-link a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.register-container .login-link a:hover {
+    text-decoration: underline;
+}
+
+/* TOTP Form */
+#totp-form {
+    display: none;
+}
+
+.totp-info {
+    font-size: 13px;
+    color: #6c757d;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.back-to-login {
+    text-align: center;
+    margin-top: 10px;
+}
+
 .container.privacy-container {
     flex: 1;
     padding-bottom: 40px;
 }
+
+.container.contact-container {
+    display: block;
+    padding: 20px;
+    margin: 0 auto;
+    margin-top: 50px;
+    max-width: 1200px;
+}
+
+.container.contact-container h2 {
+    font-size: 32px;
+    margin-left: 10px;
+    margin-bottom: 20px;
+    color: #0056b3;
+}
+
+.container.contact-container p {
+    line-height: 1.8;
+    margin-left: 15px;
+    margin-bottom: 15px;
+}
+
+.contact-details p {
+    margin-bottom: 10px;
+}
+
+.contact-details a {
+    color: #0056b3;
+    text-decoration: none;
+}
+
+.contact-details a:hover {
+    text-decoration: underline;
+}
+
